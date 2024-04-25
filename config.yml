@@ -1,5 +1,6 @@
-keys: 
-  postmanKeyName: "POSTMAN_API_KEY"
-  postmanSecretName: "secret"
+env: 
+  postman: 
+    keyName: "POSTMAN_API_KEY"
+    keySecretName: "secret"
 op: 
   vault: "personal"
