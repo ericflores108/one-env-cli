@@ -9,9 +9,9 @@ import (
 
 // addCmd represents the add command
 var addCmd = &cobra.Command{
-	Use:   "add [postman] [-e|--env]",
-	Short: "add an environment to postman",
-	Long:  `This command allows you to add an environment to postman from 1Password.`,
+	Use:   "add [postman] [-i|--item]",
+	Short: "add a 1Password item to an integrated application",
+	Long:  `This command allows you to add an item to postman from 1Password.`,
 }
 
 var (
@@ -19,7 +19,7 @@ var (
 )
 
 func init() {
-	addCmd.PersistentFlags().StringVarP(&EnvName, "env", "e", "", "environment to add")
-	addCmd.MarkPersistentFlagRequired("env")
+	addCmd.PersistentFlags().StringVarP(&EnvName, "item", "i", "", "item to add")
+	addCmd.MarkPersistentFlagRequired("item")
 	rootCmd.AddCommand(addCmd)
 }

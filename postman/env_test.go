@@ -92,8 +92,13 @@ func TestCreateEnv(t *testing.T) {
 		{Key: "key2", Value: "value2", Enabled: false, Type: "secret"},
 	}
 
+	envData := EnvironmentData{
+		Name:   "Test Environment",
+		Values: variables,
+	}
+
 	// Call the CreateEnv function
-	resp, err := CreateEnv("Test Environment", variables)
+	resp, err := CreateEnv(envData)
 
 	// Assert that no error occurred
 	if err != nil {

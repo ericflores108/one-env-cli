@@ -4,28 +4,30 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sync"
 )
 
 var BaseURL string = "https://api.getpostman.com"
 var APIKey string
-
-func init() {
-	err := initializeAPIKey()
-	if err != nil {
-		fmt.Println("Failed to initialize API secret:", err)
-	}
-}
+var initAPIKeyOnce sync.Once
 
 func initializeAPIKey() error {
 	var err error
-	APIKey, err = GetPostmanAPISecret()
-	if err != nil {
-		return fmt.Errorf("failed to get Postman API secret: %v", err)
-	}
-	return nil
+	initAPIKeyOnce.Do(func() {
+		APIKey, err = GetPostmanAPISecret()
+		if err != nil {
+			err = fmt.Errorf("failed to get Postman API secret: %v", err)
+		}
+	})
+	return err
 }
 
 func makeRequest(method, endpoint string, body io.Reader) (*http.Response, error) {
+	err := initializeAPIKey()
+	if err != nil {
+		return nil, err
+	}
+
 	url := BaseURL + endpoint
 
 	req, err := http.NewRequest(method, url, body)

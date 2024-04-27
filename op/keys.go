@@ -12,9 +12,9 @@ type Key struct {
 	SecretName string
 }
 
-func GetKeyConfig(entity string) (Key, error) {
+func GetKeyConfig(integratedParty string) (Key, error) {
 	var key Key
-	if entity == "" {
+	if integratedParty == "" {
 		return key, errors.New("entity is empty")
 	}
 
@@ -23,7 +23,7 @@ func GetKeyConfig(entity string) (Key, error) {
 		return key, errors.New("op.vault is empty")
 	}
 
-	viperStringPrefix := "entity." + entity
+	viperStringPrefix := "integration." + integratedParty
 	viperKeyName := viper.GetString(viperStringPrefix + ".keyName")
 	viperSecretName := viper.GetString(viperStringPrefix + ".keySecretName")
 

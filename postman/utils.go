@@ -14,7 +14,7 @@ func TransformItemToEnv(item op.ItemResponse) EnvironmentData {
 		}
 
 		envVar := EnvironmentVariable{
-			Key:     field.ID,
+			Key:     field.Label,
 			Value:   field.Value,
 			Enabled: true,
 			Type:    envType,

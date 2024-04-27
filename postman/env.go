@@ -70,13 +70,7 @@ func GetAllEnv() (EnvironmentsResponse, error) {
 	return envResponse, nil
 }
 
-func CreateEnv(name string, variables []EnvironmentVariable) (*http.Response, error) {
-	// Create the environment data
-	envData := EnvironmentData{
-		Name:   name,
-		Values: variables,
-	}
-
+func CreateEnv(envData EnvironmentData) (*http.Response, error) {
 	// Create the request payload
 	payload := CreateEnvironmentRequest{
 		Environment: envData,

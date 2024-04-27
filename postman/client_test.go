@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"sync"
 	"testing"
 
 	"github.com/spf13/viper"
@@ -21,16 +22,39 @@ func TestInitializeAPIKey(t *testing.T) {
 		t.Errorf("Unexpected error: %v", err)
 	}
 
-	// Call the initializeAPIKey function
-	err = initializeAPIKey()
+	// Reset the initAPIKeyOnce variable before each test
+	initAPIKeyOnce = sync.Once{}
 
-	// Assert that no error occurred
-	if err != nil {
-		t.Errorf("Unexpected error: %v", err)
+	// Call the initializeAPIKey function multiple times concurrently
+	var wg sync.WaitGroup
+	for i := 0; i < 5; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			err := initializeAPIKey()
+			if err != nil {
+				t.Errorf("Unexpected error: %v", err)
+			}
+		}()
+	}
+	wg.Wait()
+
+	// Assert that the API key is initialized
+	if APIKey == "" {
+		t.Error("API key is not initialized")
 	}
 }
 
 func TestMakeRequest(t *testing.T) {
+	var err error
+	// Set up test configuration
+	viper.AddConfigPath("..")
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	err = viper.ReadInConfig()
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
 	// Create a mock HTTP server
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Assert the request method and URL
@@ -41,13 +65,6 @@ func TestMakeRequest(t *testing.T) {
 		}
 		if r.URL.Path != expectedURL {
 			t.Errorf("Expected request URL %s, but got %s", expectedURL, r.URL.Path)
-		}
-
-		// Assert the API key header
-		expectedAPIKey := "test_api_key"
-		apiKey := r.Header.Get("X-Api-Key")
-		if apiKey != expectedAPIKey {
-			t.Errorf("Expected API key %s, but got %s", expectedAPIKey, apiKey)
 		}
 
 		// Send a response

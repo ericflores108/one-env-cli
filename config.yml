@@ -1,6 +1,6 @@
-entity: 
+integration: 
   postman: 
-    keyName: "POSTMAN_API_KEY"
-    keySecretName: "secret"
+    keyName: "Postman"
+    keySecretName: "api-key"
 op: 
-  vault: "personal"
+  vault: "Developer"
