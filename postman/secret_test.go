@@ -7,21 +7,26 @@ import (
 )
 
 func TestGetPostmanAPISecret(t *testing.T) {
+	var _ any
+	var err error
 	// Set up test configuration
-	viper.Set("op.vault", "personal")
-	viper.Set("keys.postman.KeyName", "POSTMAN_API_KEY")
-	viper.Set("keys.postman.SecretName", "secret")
-
+	viper.AddConfigPath("..")
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	err = viper.ReadInConfig()
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
 	// Test successful retrieval of secret
-	_, err := GetPostmanAPISecret()
+	_, err = GetPostmanAPISecret()
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
 
 	// Test error handling
-	viper.Set("keys.postman.SecretName", "")
+	viper.Set("entity.postman.keySecretName", "")
 	_, err = GetPostmanAPISecret()
 	if err == nil {
-		t.Error("Expected error for keys.postman.SecretName, but got nil")
+		t.Error("Expected error for entity.postman.keySecretName, but got nil")
 	}
 }

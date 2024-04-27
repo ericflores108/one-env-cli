@@ -1,4 +1,4 @@
-env: 
+entity: 
   postman: 
     keyName: "POSTMAN_API_KEY"
     keySecretName: "secret"

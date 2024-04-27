@@ -16,8 +16,8 @@ type Item struct {
 
 type Items []Item
 
-func List() (Items, error) {
-	var list Items
+func GetItems() (Items, error) {
+	var items Items
 
 	cmd := exec.Command("op", "item", "list")
 	var out bytes.Buffer
@@ -25,7 +25,7 @@ func List() (Items, error) {
 
 	err := cmd.Run()
 	if err != nil {
-		return list, err
+		return items, err
 	}
 
 	scanner := bufio.NewScanner(&out)
@@ -41,10 +41,10 @@ func List() (Items, error) {
 					Vault:  fields[2],
 					Edited: strings.Join(fields[3:], " "),
 				}
-				list = append(list, item)
+				items = append(items, item)
 			}
 		}
 	}
 
-	return list, nil
+	return items, nil
 }

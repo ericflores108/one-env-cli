@@ -12,11 +12,11 @@ func TestGetKeyConfig(t *testing.T) {
 	viper.SetConfigType("yaml")
 	err := viper.ReadInConfig()
 	if err != nil {
-		t.Errorf("Expected error: %v", err)
+		t.Errorf("error: %v", err)
 	}
 	key, err := GetKeyConfig("postman")
 	if err != nil {
-		t.Errorf("Expected error: %v", err)
+		t.Errorf("error: %v", err)
 	}
 	t.Log(key)
 }
