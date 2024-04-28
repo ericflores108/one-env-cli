@@ -1,6 +1,11 @@
 plugin: 
   postman: 
-    keyName: "Postman"
-    keySecretName: "api-key"
+    keyName: Postman
+    keySecretName: api-key
 op: 
-  vault: "Developer"
+  vault: Developer
+cli:
+  logging:
+    level: debug
+    encoding: json
+    outputPath: tmp/log/one-env-cli.json

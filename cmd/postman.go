@@ -2,9 +2,11 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/ericflores108/one-env-cli/services/plugin/postman"
 	"github.com/ericflores108/one-env-cli/services/provider/op"
+	"github.com/ericflores108/one-env-cli/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -13,6 +15,7 @@ var postmanCmd = &cobra.Command{
 	Short: "add a 1Password item to create postman environment",
 	Long:  `1Password secrets will be used to create a Postman environment.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		verbose, _ := cmd.Flags().GetBool("verbose")
 		itemName, err := cmd.Flags().GetString("item")
 		if err != nil {
 			fmt.Printf("error retrieving item: %s\n", err.Error())
@@ -39,7 +42,11 @@ var postmanCmd = &cobra.Command{
 			return err
 		}
 		defer resp.Body.Close()
-
+		b, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return utils.Error("\n  reading response: %v\n  ", err, verbose)
+		}
+		utils.LogHTTPResponse(verbose, resp, b)
 		fmt.Printf("Environment '%s' created successfully in Postman\n", envData.Name)
 		return nil
 	},
