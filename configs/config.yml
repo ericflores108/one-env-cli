@@ -1,4 +1,4 @@
-integration: 
+plugin: 
   postman: 
     keyName: "Postman"
     keySecretName: "api-key"

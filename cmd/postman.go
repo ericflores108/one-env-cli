@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/ericflores108/one-env-cli/op"
-	"github.com/ericflores108/one-env-cli/postman"
+	"github.com/ericflores108/one-env-cli/services/plugin/postman"
+	"github.com/ericflores108/one-env-cli/services/provider/op"
 	"github.com/spf13/cobra"
 )
 

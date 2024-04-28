@@ -12,26 +12,26 @@ type Key struct {
 	SecretName string
 }
 
-func GetKeyConfig(integratedParty string) (Key, error) {
+func GetKeyConfig(plugin string) (Key, error) {
 	var key Key
-	if integratedParty == "" {
-		return key, errors.New("entity is empty")
+	if plugin == "" {
+		return key, errors.New("plugin is not supported")
 	}
 
 	vault := viper.GetString("op.vault")
 	if vault == "" {
-		return key, errors.New("op.vault is empty")
+		return key, errors.New("op.vault does not exist")
 	}
 
-	viperStringPrefix := "integration." + integratedParty
+	viperStringPrefix := "plugin." + plugin
 	viperKeyName := viper.GetString(viperStringPrefix + ".keyName")
 	viperSecretName := viper.GetString(viperStringPrefix + ".keySecretName")
 
 	if viperKeyName == "" {
-		return key, errors.New("viperKeyName is empty")
+		return key, errors.New("key name does not exist")
 	}
 	if viperSecretName == "" {
-		return key, errors.New("viperKeyName is empty")
+		return key, errors.New("secret name does not exist")
 	}
 
 	return Key{Vault: vault, KeyName: viperKeyName, SecretName: viperSecretName}, nil

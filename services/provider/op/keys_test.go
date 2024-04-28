@@ -7,7 +7,7 @@ import (
 )
 
 func TestGetKeyConfig(t *testing.T) {
-	viper.AddConfigPath("..")
+	viper.AddConfigPath("../../../configs")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	err := viper.ReadInConfig()
