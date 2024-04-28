@@ -8,4 +8,4 @@ cli:
   logging:
     level: debug
     encoding: json
-    outputPath: tmp/log/one-env-cli.json
+    outputPaths: [tmp/log/one-env-cli.json]
