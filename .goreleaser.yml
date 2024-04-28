@@ -49,5 +49,3 @@ brews:
       name: homebrew-one-env-cli
     commit_author:
       name: ericflores108
-checksum:
-  name_template: 'checksums.txt'
