@@ -6,7 +6,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - linux
-      - windows
       - darwin
     goarch:
       - amd64
@@ -44,8 +43,10 @@ brews:
   -
     name: one-env-cli
     homepage: https://github.com/ericflores108
-    tap:
+    repository:
       owner: ericflores108
       name: homebrew-ericflores108
     commit_author:
       name: ericflores108
+metadata:
+  mod_timestamp: "{{ .CommitTimestamp }}"

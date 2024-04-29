@@ -4,7 +4,9 @@ Copyright © 2024 Eric Flores <eflorty108@gmail.com>
 package cmd
 
 import (
+	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -42,8 +44,21 @@ func init() {
 }
 
 func Configure() {
-	viper.AddConfigPath("configs")
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.ReadInConfig()
+	viper.SetConfigName("cli")
+	viper.SetConfigType("json")
+
+	// Search for the config file in the current directory
+	viper.AddConfigPath(".")
+
+	// Search for the config file in the configs directory relative to the executable
+	execPath, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	viper.AddConfigPath(filepath.Join(filepath.Dir(execPath), "configs"))
+
+	err = viper.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("fatal error config file: %w", err))
+	}
 }

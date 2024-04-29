@@ -1,0 +1,20 @@
+{
+  "plugin": {
+    "postman": {
+      "keyName": "Postman",
+      "keySecretName": "api-key"
+    }
+  },
+  "op": {
+    "vault": "Developer"
+  },
+  "cli": {
+    "logging": {
+      "level": "debug",
+      "encoding": "json",
+      "outputPaths": [
+        "tmp/log/one-env-cli.json"
+      ]
+    }
+  }
+}
