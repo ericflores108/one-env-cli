@@ -42,7 +42,7 @@ func init() {
 }
 
 func Configure() {
-	viper.AddConfigPath("./configs")
+	viper.AddConfigPath("configs")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.ReadInConfig()
