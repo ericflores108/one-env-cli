@@ -50,3 +50,5 @@ brews:
       name: ericflores108
 metadata:
   mod_timestamp: "{{ .CommitTimestamp }}"
+extra_files:
+ - glob: configs/cli.json
