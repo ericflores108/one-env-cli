@@ -44,8 +44,8 @@ brews:
   -
     name: one-env-cli
     homepage: https://github.com/ericflores108
-    tap:
+    repository:
       owner: ericflores108
-      name: homebrew-ericflores108
+      name: homebrew-tap
     commit_author:
       name: ericflores108

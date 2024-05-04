@@ -46,28 +46,28 @@ func init() {
 }
 
 func Configure() {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		log.Fatalf("Failed to get user home directory: %v", err)
-	}
+    homeDir, err := os.UserHomeDir()
+    if err != nil {
+        log.Fatalf("Failed to get user home directory: %v", err)
+    }
 
-	configDir := filepath.Join(homeDir, ".one-env-cli")
-	configFile := filepath.Join(configDir, ".one-env-cli")
+    configDir := filepath.Join(homeDir, ".one-env-cli")
+    configFile := filepath.Join(configDir, ".one-env-cli")
 
-	// Create the configuration file if it doesn't exist
-	err = utils.CreateFilesIfNotExists([]string{configFile})
-	if err != nil {
-		log.Fatalf("Failed to create configuration file: %v", err)
-	}
+    // Create the configuration file if it doesn't exist
+    err = utils.CreateFilesIfNotExists([]string{configFile})
+    if err != nil {
+        log.Fatalf("Failed to create configuration file: %v", err)
+    }
 
-	viper.SetConfigType("json")
-	viper.SetConfigFile(configFile)
+    viper.SetConfigType("json")
+    viper.SetConfigFile(configFile)
 
-	err = viper.ReadInConfig()
-	if err != nil {
-		// If the configuration file is empty, write the default configuration
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			defaultConfig := `{
+    err = viper.ReadInConfig()
+    if err != nil {
+        // If the configuration file is empty or not found, write the default configuration
+        if _, ok := err.(viper.ConfigFileNotFoundError); ok || isEmptyFile(configFile) {
+            defaultConfig := `{
                 "plugin": {
                     "postman": {
                         "keyName": "Postman",
@@ -88,17 +88,25 @@ func Configure() {
                 }
             }`
 
-			err = viper.ReadConfig(bytes.NewBufferString(defaultConfig))
-			if err != nil {
-				log.Fatalf("Failed to read default configuration: %v", err)
-			}
+            err = viper.ReadConfig(bytes.NewBufferString(defaultConfig))
+            if err != nil {
+                log.Fatalf("Failed to read default configuration: %v", err)
+            }
 
-			err = viper.WriteConfig()
-			if err != nil {
-				log.Fatalf("Failed to write default configuration: %v", err)
-			}
-		} else {
-			log.Fatalf("Failed to read configuration file: %v", err)
-		}
-	}
+            err = viper.WriteConfig()
+            if err != nil {
+                log.Fatalf("Failed to write default configuration: %v", err)
+            }
+        } else {
+            log.Fatalf("Failed to read configuration file: %v", err)
+        }
+    }
+}
+
+func isEmptyFile(filePath string) bool {
+    info, err := os.Stat(filePath)
+    if err != nil {
+        return false
+    }
+    return info.Size() == 0
 }
