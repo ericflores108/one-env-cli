@@ -1,13 +1,9 @@
-/*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
 	"github.com/spf13/cobra"
 )
 
-// addCmd represents the add command
 var addCmd = &cobra.Command{
 	Use:   "add [postman] [-i|--item]",
 	Short: "add a 1Password item to an integrated application",

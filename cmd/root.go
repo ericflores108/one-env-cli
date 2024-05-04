@@ -4,10 +4,12 @@ Copyright © 2024 Eric Flores <eflorty108@gmail.com>
 package cmd
 
 import (
-	"fmt"
+	"bytes"
+	"log"
 	"os"
 	"path/filepath"
 
+	"github.com/ericflores108/one-env-cli/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -44,21 +46,67 @@ func init() {
 }
 
 func Configure() {
-	viper.SetConfigName("cli")
-	viper.SetConfigType("json")
+    homeDir, err := os.UserHomeDir()
+    if err != nil {
+        log.Fatalf("Failed to get user home directory: %v", err)
+    }
 
-	// Search for the config file in the current directory
-	viper.AddConfigPath(".")
+    configDir := filepath.Join(homeDir, ".one-env-cli")
+    configFile := filepath.Join(configDir, ".one-env-cli")
 
-	// Search for the config file in the configs directory relative to the executable
-	execPath, err := os.Executable()
-	if err != nil {
-		panic(err)
-	}
-	viper.AddConfigPath(filepath.Join(filepath.Dir(execPath), "configs"))
+    // Create the configuration file if it doesn't exist
+    err = utils.CreateFilesIfNotExists([]string{configFile})
+    if err != nil {
+        log.Fatalf("Failed to create configuration file: %v", err)
+    }
 
-	err = viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("fatal error config file: %w", err))
-	}
+    viper.SetConfigType("json")
+    viper.SetConfigFile(configFile)
+
+    err = viper.ReadInConfig()
+    if err != nil {
+        // If the configuration file is empty or not found, write the default configuration
+        if _, ok := err.(viper.ConfigFileNotFoundError); ok || isEmptyFile(configFile) {
+            defaultConfig := `{
+                "plugin": {
+                    "postman": {
+                        "keyName": "Postman",
+                        "keySecretName": "api-key"
+                    }
+                },
+                "op": {
+                    "vault": "Developer"
+                },
+                "cli": {
+                    "logging": {
+                        "level": "debug",
+                        "encoding": "json",
+                        "outputPaths": [
+                            "tmp/log/one-env-cli.json"
+                        ]
+                    }
+                }
+            }`
+
+            err = viper.ReadConfig(bytes.NewBufferString(defaultConfig))
+            if err != nil {
+                log.Fatalf("Failed to read default configuration: %v", err)
+            }
+
+            err = viper.WriteConfig()
+            if err != nil {
+                log.Fatalf("Failed to write default configuration: %v", err)
+            }
+        } else {
+            log.Fatalf("Failed to read configuration file: %v", err)
+        }
+    }
+}
+
+func isEmptyFile(filePath string) bool {
+    info, err := os.Stat(filePath)
+    if err != nil {
+        return false
+    }
+    return info.Size() == 0
 }

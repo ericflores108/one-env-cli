@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os/exec"
 
-	op "github.com/ericflores108/one-env-cli/services/provider/op"
+	"github.com/ericflores108/one-env-cli/services/provider/op"
 )
 
 func GetPostmanAPISecret() (string, error) {
