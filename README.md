@@ -2,6 +2,22 @@
 
 One-Env-CLI is a command-line tool that streamlines environment creation using your password manager as the provider. It provides a convenient way to manage and create environments, such as Postman environments, quickly and securely.
 
+![Beta](https://img.shields.io/badge/status-beta-yellow)
+
+This entire project is currently in beta. All features and functionality are subject to change.
+
+## Prerequisites
+
+To use this project, you need to have the following dependencies installed (more password managers and plugins are able to be developed): 
+
+Password managers: 
+- [1Password](https://1password.com/)
+- [1Password CLI](https://developer.1password.com/docs/cli/)
+
+Plugins: 
+- [Postman](https://www.postman.com/)
+- [Postman API Key](https://web.postman.co/settings/me/api-keys)
+
 ## Installation
 
 ### Using Homebrew
@@ -91,6 +107,8 @@ one-env-cli add postman -i Strava
 ```
 
 This command will retrieve the specified 1Password item, transform it into a Postman environment, and create the environment in Postman.
+
+All 1Password secrets are retrieved through 1Password CLI. 
 
 ## License
 
