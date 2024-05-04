@@ -4,7 +4,11 @@ One-Env-CLI is a command-line tool that streamlines environment creation using y
 
 ## Installation
 
-One-Env-CLI can be installed using Homebrew. Run the following command to install the tool:
+### Using Homebrew
+
+You can use [Homebrew](https://brew.sh/) (on macOS or Linux) to install one-env-cli.
+
+Run the following command to install the tool:
 
 ```
 brew tap ericflores108/tap
@@ -34,15 +38,9 @@ one-env-cli [command] [flags]
 
 One-Env-CLI uses a configuration file to store settings. The default configuration file is located at `~/.one-env-cli` and is in JSON format.
 
-## Installation
-
-### Using Homebrew
-
-You can use [Homebrew](https://brew.sh/) (on macOS or Linux) to install one-env-cli.
-
 ## Demo
 
-![Demo GIF](https://github.com/ericflores108/one-env-cli/images/cliapp.gif)
+![Demo GIF](./images/cli.gif)
 
 ### Default Configuration
 
