@@ -3,7 +3,7 @@ package postman
 import (
 	"testing"
 
-	op "github.com/ericflores108/one-env-cli/services/provider/op"
+	"github.com/ericflores108/one-env-cli/services/provider/op"
 )
 
 func TestTransformItemToEnv(t *testing.T) {

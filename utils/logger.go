@@ -2,11 +2,8 @@ package utils
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
-	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/spf13/viper"
@@ -16,30 +13,6 @@ import (
 
 var Logger *zap.Logger
 var Verbose *zap.Logger
-
-func ensureDir(fileName string) {
-	dirName := filepath.Dir(fileName)
-	if _, serr := os.Stat(dirName); serr != nil {
-		merr := os.MkdirAll(dirName, os.FileMode(0777))
-		if merr != nil {
-			panic(merr)
-		}
-	}
-}
-
-func createFilesIfNotExists(filenames []string) error {
-	for _, filename := range filenames {
-		if _, err := os.Stat(filename); errors.Is(err, os.ErrNotExist) {
-			ensureDir(filename)
-			file, err := os.Create(filename)
-			if err != nil {
-				return err
-			}
-			defer file.Close()
-		}
-	}
-	return nil
-}
 
 func encoderConfig() zapcore.EncoderConfig {
 	return zapcore.EncoderConfig{
@@ -66,7 +39,7 @@ func InitCLILogger() {
 		panic(err)
 	}
 	cfg.EncoderConfig = encoderConfig()
-	err = createFilesIfNotExists(cfg.OutputPaths)
+	err = CreateFilesIfNotExists(cfg.OutputPaths)
 	if err != nil {
 		panic(err)
 	}
@@ -93,7 +66,7 @@ func InitAPILogger() {
 		panic(err)
 	}
 	cfg.EncoderConfig = encoderConfig()
-	err = createFilesIfNotExists(cfg.OutputPaths)
+	err = CreateFilesIfNotExists(cfg.OutputPaths)
 	if err != nil {
 		panic(err)
 	}

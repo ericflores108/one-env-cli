@@ -1,7 +1,7 @@
 package postman
 
 import (
-	op "github.com/ericflores108/one-env-cli/services/provider/op"
+	"github.com/ericflores108/one-env-cli/services/provider/op"
 )
 
 func TransformItemToEnv(item op.ItemResponse) EnvironmentData {
