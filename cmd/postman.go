@@ -35,8 +35,14 @@ var postmanCmd = &cobra.Command{
 		// Transform the item to environment data
 		envData := postman.TransformItemToEnv(item)
 
+		// Check optional flag for workspace
+		workspace, err := cmd.Flags().GetString("workspace")
+		if err != nil {
+			fmt.Printf("No workspace set. Using default workspace.")
+		}
+
 		// Create the environment in Postman
-		resp, err := postman.CreateEnv(envData)
+		resp, err := postman.CreateEnv(envData, workspace)
 		if err != nil {
 			fmt.Printf("error creating environment in Postman: %s\n", err.Error())
 			return err
@@ -53,6 +59,8 @@ var postmanCmd = &cobra.Command{
 }
 
 func init() {
-	postmanCmd.Flags().StringP("item", "i", "", "item name")
+	postmanCmd.Flags().StringP("item", "i", "", "op item name")
+	postmanCmd.MarkFlagRequired("item")
+	postmanCmd.Flags().StringP("workspace", "w", "", "postman workspace")
 	addCmd.AddCommand(postmanCmd)
 }

@@ -24,6 +24,18 @@ type EnvironmentsResponse struct {
 
 type EnvironmentType string
 
+type Workspaces struct {
+	Workspaces []Workspace `json:"workspaces"`
+}
+
+type Workspace struct {
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	Type       string `json:"type"`
+	Visibility string `json:"visibility"`
+	CreatedBy  string `json:"createdBy"`
+}
+
 const (
 	SecretType  EnvironmentType = "secret"
 	DefaultType EnvironmentType = "default"
@@ -70,7 +82,39 @@ func GetAllEnv() (EnvironmentsResponse, error) {
 	return envResponse, nil
 }
 
-func CreateEnv(envData EnvironmentData) (*http.Response, error) {
+func getWorkspace(workspace string) string {
+	resp, err := makeRequest("GET", "/workspaces", nil)
+	if err != nil {
+		fmt.Println("An error occurred. Using default workspace in Postman. ", err.Error())
+		return ""
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		fmt.Println("Using default workspace in Postman. Status code: ", resp.StatusCode)
+		return ""
+	}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("An error occurred. Using default workspace in Postman. ", err.Error())
+		return ""
+	}
+	var workspaces Workspaces
+	err = json.Unmarshal(body, &workspaces)
+	if err != nil {
+		fmt.Println("An error occurred. Using default workspace in Postman. ", err.Error())
+		return ""
+	}
+	for _, w := range workspaces.Workspaces {
+		if w.Name == workspace {
+			return w.ID
+		}
+	}
+	fmt.Println("No workspace found. Using default workspace in Postman.")
+	return ""
+}
+
+func CreateEnv(envData EnvironmentData, workspace string) (*http.Response, error) {
 	// Create the request payload
 	payload := CreateEnvironmentRequest{
 		Environment: envData,
@@ -86,7 +130,13 @@ func CreateEnv(envData EnvironmentData) (*http.Response, error) {
 	body := bytes.NewBuffer(jsonPayload)
 
 	// Make the POST request
-	resp, err := makeRequest("POST", "/environments", body)
+	endpoint := "/environments"
+	if workspace != "" {
+		if w := getWorkspace(workspace); w != "" {
+			endpoint += "?workspace=" + w
+		}
+	}
+	resp, err := makeRequest("POST", endpoint, body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make POST request: %v", err)
 	}
