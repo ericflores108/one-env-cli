@@ -43,11 +43,12 @@ one-env-cli [command] [flags]
 ### Available Commands
 
 - `add`: Add a 1Password item to an integrated application.
-  - `postman`: Add a 1Password item to create a Postman environment.
+  - `postman`: Add a 1Password item to create a Postman environment. The workspace is set to default. 
 
-### Flags
+### postman flags
 
-- `-i, --item`: Specify the item name to add.
+- `-i, --item`: Specify the item name to add. Currently, the item must be a unique name in 1Password. 
+- `-w, --workspace`: Specify the Postman workspace name to add the environment to. 
 - `-v, --verbose`: Enable verbose output.
 
 ## Configuration
