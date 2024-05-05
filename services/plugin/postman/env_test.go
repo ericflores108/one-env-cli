@@ -17,8 +17,8 @@ func TestGetAllEnv(t *testing.T) {
 	var err error
 	// Set up test configuration
 	viper.AddConfigPath("../../../configs")
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
+	viper.SetConfigName(".example-one-env-cli")
+	viper.SetConfigType("json")
 	err = viper.ReadInConfig()
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
@@ -82,6 +82,13 @@ func TestCreateEnv(t *testing.T) {
 	}))
 	defer server.Close()
 
+	viper.AddConfigPath("../../../configs")
+	viper.SetConfigName(".example-one-env-cli")
+	viper.SetConfigType("json")
+	err := viper.ReadInConfig()
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
 	// Set the base URL to the mock server URL
 	originalBaseURL := BaseURL
 	BaseURL = server.URL
@@ -98,7 +105,7 @@ func TestCreateEnv(t *testing.T) {
 	}
 
 	// Call the CreateEnv function
-	resp, err := CreateEnv(envData)
+	resp, err := CreateEnv(envData, "")
 
 	// Assert that no error occurred
 	if err != nil {

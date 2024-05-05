@@ -4,26 +4,34 @@ import (
 	"testing"
 
 	"github.com/ericflores108/one-env-cli/services/provider/op"
+	"github.com/spf13/viper"
 )
 
 func TestTransformItemToEnv(t *testing.T) {
+	viper.AddConfigPath("../../../configs")
+	viper.SetConfigName(".example-one-env-cli")
+	viper.SetConfigType("json")
+	err := viper.ReadInConfig()
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
 	// Test case 1: Item with fields of different types
 	item := op.ItemResponse{
 		ID:    "1",
 		Title: "Test Item",
 		Fields: []op.Field{
 			{
-				ID:    "username",
+				Label: "username",
 				Type:  "STRING",
 				Value: "testuser",
 			},
 			{
-				ID:    "password",
+				Label: "password",
 				Type:  "CONCEALED",
 				Value: "testpassword",
 			},
 			{
-				ID:    "notes",
+				Label: "notes",
 				Type:  "STRING",
 				Value: "Test notes",
 			},

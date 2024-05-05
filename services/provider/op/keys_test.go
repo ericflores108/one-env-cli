@@ -8,11 +8,11 @@ import (
 
 func TestGetKeyConfig(t *testing.T) {
 	viper.AddConfigPath("../../../configs")
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
+	viper.SetConfigName(".example-one-env-cli")
+	viper.SetConfigType("json")
 	err := viper.ReadInConfig()
 	if err != nil {
-		t.Errorf("error: %v", err)
+		t.Errorf("Unexpected error: %v", err)
 	}
 	key, err := GetKeyConfig("postman")
 	if err != nil {

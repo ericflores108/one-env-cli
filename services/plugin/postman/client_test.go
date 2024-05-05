@@ -15,8 +15,8 @@ func TestInitializeAPIKey(t *testing.T) {
 	var err error
 	// Set up test configuration
 	viper.AddConfigPath("../../../configs")
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
+	viper.SetConfigName(".example-one-env-cli")
+	viper.SetConfigType("json")
 	err = viper.ReadInConfig()
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
@@ -49,8 +49,8 @@ func TestMakeRequest(t *testing.T) {
 	var err error
 	// Set up test configuration
 	viper.AddConfigPath("../../../configs")
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
+	viper.SetConfigName(".example-one-env-cli")
+	viper.SetConfigType("json")
 	err = viper.ReadInConfig()
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)

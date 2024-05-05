@@ -20,7 +20,7 @@ func TestGetItems(t *testing.T) {
 }
 
 func TestGetItem(t *testing.T) {
-	item, err := GetItem("POSTMAN_API_KEY")
+	item, err := GetItem("Postman")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	} else {
