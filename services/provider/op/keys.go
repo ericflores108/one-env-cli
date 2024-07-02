@@ -2,37 +2,51 @@ package op
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/spf13/viper"
 )
 
+// Key represents the configuration for a key in a vault
 type Key struct {
-	Vault      string
-	KeyName    string
-	SecretName string
+	Vault           string
+	PluginKeyName   string
+	PluginKeySecret string
 }
 
-func GetKeyConfig(plugin string) (Key, error) {
-	var key Key
+var (
+	ErrEmptyPlugin      = errors.New("plugin is not supported")
+	ErrMissingVault     = errors.New("op.vault does not exist")
+	ErrMissingKeyName   = errors.New("plugin key name does not exist")
+	ErrMissingKeySecret = errors.New("plugin key secret does not exist")
+)
+
+// GetKeyConfig retrieves the key configuration for a given plugin
+// It returns a pointer to a Key struct and an error if any
+func GetKeyConfig(plugin string) (*Key, error) {
 	if plugin == "" {
-		return key, errors.New("plugin is not supported")
+		return nil, ErrEmptyPlugin
 	}
 
 	vault := viper.GetString("op.vault")
 	if vault == "" {
-		return key, errors.New("op.vault does not exist")
+		return nil, ErrMissingVault
 	}
 
-	viperStringPrefix := "plugin." + plugin
-	viperKeyName := viper.GetString(viperStringPrefix + ".keyName")
-	viperSecretName := viper.GetString(viperStringPrefix + ".keySecretName")
+	configPrefix := fmt.Sprintf("plugin.%s", plugin)
+	pluginKeyName := viper.GetString(fmt.Sprintf("%s.keyName", configPrefix))
+	pluginKeySecret := viper.GetString(fmt.Sprintf("%s.keySecretName", configPrefix))
 
-	if viperKeyName == "" {
-		return key, errors.New("key name does not exist")
+	if pluginKeyName == "" {
+		return nil, ErrMissingKeyName
 	}
-	if viperSecretName == "" {
-		return key, errors.New("secret name does not exist")
+	if pluginKeySecret == "" {
+		return nil, ErrMissingKeySecret
 	}
 
-	return Key{Vault: vault, KeyName: viperKeyName, SecretName: viperSecretName}, nil
+	return &Key{
+		Vault:           vault,
+		PluginKeyName:   pluginKeyName,
+		PluginKeySecret: pluginKeySecret,
+	}, nil
 }
