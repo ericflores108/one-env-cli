@@ -14,7 +14,7 @@ func GetPostmanAPISecret() (string, error) {
 		return "", err
 	}
 
-	cmd := exec.Command("op", "read", fmt.Sprintf("op://%s/%s/%s", key.Vault, key.PluginKeyName, key.PluginKeySecret), "--no-newline")
+	cmd := exec.Command("op", "read", fmt.Sprintf("op://%s/%s/%s", key.Vault, key.KeyName, key.SecretName), "--no-newline")
 	var out bytes.Buffer
 	cmd.Stdout = &out
 

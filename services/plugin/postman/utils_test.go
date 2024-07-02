@@ -62,7 +62,7 @@ func TestTransformItemToEnv(t *testing.T) {
 		},
 	}
 
-	envData := TransformItemToEnv(&item)
+	envData := TransformItemToEnv(item)
 
 	if envData.Name != expectedEnvData.Name {
 		t.Errorf("Expected environment name: %s, got: %s", expectedEnvData.Name, envData.Name)
@@ -90,7 +90,7 @@ func TestTransformItemToEnv(t *testing.T) {
 		Values: []EnvironmentVariable{},
 	}
 
-	envData = TransformItemToEnv(&item)
+	envData = TransformItemToEnv(item)
 
 	if envData.Name != expectedEnvData.Name {
 		t.Errorf("Expected environment name: %s, got: %s", expectedEnvData.Name, envData.Name)

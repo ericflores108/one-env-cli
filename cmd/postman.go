@@ -32,8 +32,8 @@ var postmanCmd = &cobra.Command{
 			return err
 		}
 
-		// Transform the item to Postman environment data for request
-		envData := *postman.TransformItemToEnv(item)
+		// Transform the item to environment data
+		envData := postman.TransformItemToEnv(item)
 
 		// Check optional flag for workspace
 		workspace, err := cmd.Flags().GetString("workspace")

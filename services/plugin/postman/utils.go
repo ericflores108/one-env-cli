@@ -4,7 +4,7 @@ import (
 	"github.com/ericflores108/one-env-cli/services/provider/op"
 )
 
-func TransformItemToEnv(item *op.ItemResponse) *EnvironmentData {
+func TransformItemToEnv(item op.ItemResponse) EnvironmentData {
 	var envVars []EnvironmentVariable
 
 	for _, field := range item.Fields {
@@ -22,7 +22,7 @@ func TransformItemToEnv(item *op.ItemResponse) *EnvironmentData {
 		envVars = append(envVars, envVar)
 	}
 
-	envData := &EnvironmentData{
+	envData := EnvironmentData{
 		Name:   item.Title,
 		Values: envVars,
 	}
