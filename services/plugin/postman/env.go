@@ -25,16 +25,18 @@ type EnvironmentsResponse struct {
 type EnvironmentType string
 
 type Workspaces struct {
-	Workspaces []Workspace `json:"workspaces"`
+	Workspaces []PostmanWorkspace `json:"workspaces"`
 }
 
-type Workspace struct {
+type PostmanWorkspace struct {
 	ID         string `json:"id"`
 	Name       string `json:"name"`
 	Type       string `json:"type"`
 	Visibility string `json:"visibility"`
 	CreatedBy  string `json:"createdBy"`
 }
+
+type WorkspaceID string
 
 const (
 	SecretType  EnvironmentType = "secret"
@@ -57,32 +59,10 @@ type CreateEnvironmentRequest struct {
 	Environment EnvironmentData `json:"environment"`
 }
 
-func GetAllEnv() (EnvironmentsResponse, error) {
-	resp, err := makeRequest("GET", "/environments", nil)
-	if err != nil {
-		return EnvironmentsResponse{}, err
+func Workspace(name string) WorkspaceID {
+	if name == "" {
+		return ""
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		return EnvironmentsResponse{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return EnvironmentsResponse{}, err
-	}
-
-	var envResponse EnvironmentsResponse
-	err = json.Unmarshal(body, &envResponse)
-	if err != nil {
-		return EnvironmentsResponse{}, err
-	}
-
-	return envResponse, nil
-}
-
-func getWorkspace(workspace string) string {
 	resp, err := makeRequest("GET", "/workspaces", nil)
 	if err != nil {
 		fmt.Println("An error occurred. Using default workspace in Postman. ", err.Error())
@@ -106,15 +86,15 @@ func getWorkspace(workspace string) string {
 		return ""
 	}
 	for _, w := range workspaces.Workspaces {
-		if w.Name == workspace {
-			return w.ID
+		if w.Name == name {
+			return WorkspaceID(w.ID)
 		}
 	}
 	fmt.Println("No workspace found. Using default workspace in Postman.")
 	return ""
 }
 
-func CreateEnv(envData EnvironmentData, workspace string) (*http.Response, error) {
+func CreateEnv(envData EnvironmentData, workspaceName string) (*http.Response, error) {
 	// Create the request payload
 	payload := CreateEnvironmentRequest{
 		Environment: envData,
@@ -131,10 +111,8 @@ func CreateEnv(envData EnvironmentData, workspace string) (*http.Response, error
 
 	// Make the POST request
 	endpoint := "/environments"
-	if workspace != "" {
-		if w := getWorkspace(workspace); w != "" {
-			endpoint += "?workspace=" + w
-		}
+	if workspaceID := Workspace(workspaceName); workspaceID != "" {
+		endpoint += "?workspace=" + string(workspaceID)
 	}
 	resp, err := makeRequest("POST", endpoint, body)
 	if err != nil {
