@@ -27,7 +27,7 @@ func initializeAPIKey() error {
 	initAPIKeyOnce.Do(func() {
 		APIKey, err = GetPostmanAPISecret()
 		if err != nil {
-			err = fmt.Errorf("failed to get Postman API secret: %w", err)
+			err = fmt.Errorf("failed to get Postman API secret: %v", err)
 		}
 	})
 	return err
@@ -36,21 +36,21 @@ func initializeAPIKey() error {
 func makeRequest(method, endpoint string, body io.Reader) (*http.Response, error) {
 	err := initializeAPIKey()
 	if err != nil {
-		return nil, fmt.Errorf("failed to initialize API key: %w", err)
+		return nil, fmt.Errorf("failed to initialize API key: %v", err)
 	}
 
 	url := BaseURL + endpoint
 
 	bodyBytes, err := io.ReadAll(body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read request body: %w", err)
+		return nil, fmt.Errorf("failed to read request body: %v", err)
 	}
 
 	bodyReader := bytes.NewReader(bodyBytes)
 
 	req, err := http.NewRequest(method, url, bodyReader)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+		return nil, fmt.Errorf("failed to create HTTP request: %v", err)
 	}
 
 	req.Header.Set("X-Api-Key", APIKey)
@@ -58,7 +58,7 @@ func makeRequest(method, endpoint string, body io.Reader) (*http.Response, error
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("failed to send HTTP request: %w", err)
+		return nil, fmt.Errorf("failed to send HTTP request: %v", err)
 	}
 
 	return resp, nil
