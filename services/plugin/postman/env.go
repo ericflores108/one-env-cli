@@ -123,7 +123,7 @@ func CreateEnv(envData EnvironmentData, workspace string) (*http.Response, error
 	// Convert the payload to JSON
 	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal JSON payload: %v", err)
+		return nil, fmt.Errorf("failed to marshal JSON payload: %w", err)
 	}
 
 	// Create the request body
@@ -138,7 +138,15 @@ func CreateEnv(envData EnvironmentData, workspace string) (*http.Response, error
 	}
 	resp, err := makeRequest("POST", endpoint, body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to make POST request: %v", err)
+		return nil, fmt.Errorf("failed to make POST request: %w", err)
+	}
+
+	// Check for the specific status code
+	if resp.StatusCode != http.StatusOK {
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		resp.Body.Close()
+		return nil, fmt.Errorf("unexpected status code: %d. Expected: %d. Response: %s",
+			resp.StatusCode, http.StatusOK, string(bodyBytes))
 	}
 
 	return resp, nil
