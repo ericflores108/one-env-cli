@@ -5,20 +5,15 @@ import (
 	"fmt"
 	"os/exec"
 
-	"github.com/ericflores108/one-env-cli/services/provider/op"
+	"github.com/ericflores108/one-env-cli/utils"
 )
 
 func GetPostmanAPISecret() (string, error) {
-	key, err := op.GetPluginConfig("postman")
-	if err != nil {
-		return "", err
-	}
-
-	cmd := exec.Command("op", "read", fmt.Sprintf("op://%s/%s/%s", key.Vault, key.KeyName, key.SecretName), "--no-newline")
+	cmd := exec.Command("op", "read", fmt.Sprintf("op://%s/%s/%s", utils.C.Provider.OP.Vault, utils.C.Plugin.Postman.KeyName, utils.C.Plugin.Postman.KeySecretName), "--no-newline")
 	var out bytes.Buffer
 	cmd.Stdout = &out
 
-	err = cmd.Run()
+	err := cmd.Run()
 	if err != nil {
 		return "", err
 	}

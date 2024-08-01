@@ -5,9 +5,9 @@ package cmd
 
 import (
 	"bytes"
+	"errors"
 	"log"
 	"os"
-	"path/filepath"
 
 	"github.com/ericflores108/one-env-cli/utils"
 	"github.com/spf13/cobra"
@@ -46,69 +46,31 @@ func init() {
 }
 
 func Configure() {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		log.Fatalf("Failed to get user home directory: %v", err)
+	err := utils.ReadConfigPath()
+	if err == nil {
+		log.Println("Existing configuration file read successfully.")
+		utils.InitConfig()
+		return
 	}
 
-	configDir := filepath.Join(homeDir, ".one-env-cli")
-	configFile := filepath.Join(configDir, ".one-env-cli")
-
-	// Create the configuration file if it doesn't exist
-	err = utils.CreateFilesIfNotExists([]string{configFile})
-	if err != nil {
-		log.Fatalf("Failed to create configuration file: %v", err)
+	if !errors.Is(err, viper.ConfigFileNotFoundError{}) && !os.IsNotExist(err) {
+		log.Fatalf("Failed to read configuration file: %v", err)
 	}
 
-	viper.SetConfigType("json")
-	viper.SetConfigFile(configFile)
-
-	err = viper.ReadInConfig()
+	// At this point, we know the config file was not found, so we'll use the default configuration
+	defaultConfig := utils.DefaultConfig()
+	err = viper.ReadConfig(bytes.NewBufferString(defaultConfig))
 	if err != nil {
-		// If the configuration file is empty or not found, write the default configuration
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok || isEmptyFile(configFile) {
-			defaultConfig := `{
-                "plugin": {
-                    "postman": {
-                        "keyName": "Postman",
-                        "keySecretName": "api-key"
-                    }
-                },
-                "provider": {
-                    "op": {
-                        "vault": "Developer"
-                    }
-                },
-                "cli": {
-                    "logging": {
-                        "level": "debug",
-                        "encoding": "json",
-                        "outputPaths": [
-                            "tmp/log/one-env-cli.json"
-                        ]
-                    }
-                }
-            }`
-
-			err = viper.ReadConfig(bytes.NewBufferString(defaultConfig))
-			if err != nil {
-				log.Fatalf("Failed to read default configuration: %v", err)
-			}
-
-			err = viper.WriteConfig()
-			if err != nil {
-				log.Fatalf("Failed to write default configuration: %v", err)
-			}
-		} else {
-			log.Fatalf("Failed to read configuration file: %v", err)
-		}
+		log.Fatalf("Failed to read default configuration: %v", err)
 	}
-}
 
-func isEmptyFile(filePath string) bool {
-	info, err := os.Stat(filePath)
+	utils.CreateAndWriteConfigFile()
+
+	err = viper.WriteConfig()
 	if err != nil {
-		return false
+		log.Fatalf("Failed to write default configuration: %v", err)
 	}
-	return info.Size() == 0
+
+	log.Println("Default configuration has been written.")
+	utils.InitConfig()
 }

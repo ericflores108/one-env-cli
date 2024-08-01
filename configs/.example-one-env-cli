@@ -2,7 +2,11 @@
   "plugin": {
     "postman": {
       "keyName": "Postman",
-      "keySecretName": "api-key"
+      "keySecretName": "api-key",
+      "type": "rest"
+    },
+    "gcp": {
+      "type": "cli"
     }
   },
   "provider": {
