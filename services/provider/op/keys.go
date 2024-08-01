@@ -18,9 +18,9 @@ func GetKeyConfig(plugin string) (Key, error) {
 		return key, errors.New("plugin is not supported")
 	}
 
-	vault := viper.GetString("op.vault")
+	vault := viper.GetString("provider.op.vault")
 	if vault == "" {
-		return key, errors.New("op.vault does not exist")
+		return key, errors.New("provider.op.vault does not exist")
 	}
 
 	viperStringPrefix := "plugin." + plugin

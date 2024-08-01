@@ -90,7 +90,7 @@ You can modify the configuration file to suit your needs. The available options 
 
 - `plugin.postman.keyName`: The name of the 1Password item that contains the Postman API key.
 - `plugin.postman.keySecretName`: The name of the secret field within the 1Password item that holds the Postman API key.
-- `op.vault`: The name of the 1Password vault to use.
+- `provider.op.vault`: The name of the 1Password vault to use.
 - `cli.logging.level`: The logging level (e.g., "debug", "info", "error").
 - `cli.logging.encoding`: The encoding format for the log files (e.g., "json").
 - `cli.logging.outputPaths`: An array of file paths where the logs will be written.

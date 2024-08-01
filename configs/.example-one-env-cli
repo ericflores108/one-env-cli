@@ -5,8 +5,11 @@
       "keySecretName": "api-key"
     }
   },
-  "op": {
-    "vault": "Developer"
+  "provider": {
+    "op": {
+      "vault": "Developer"
+    },
+    "bw": {}
   },
   "cli": {
     "logging": {
