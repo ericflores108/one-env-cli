@@ -28,25 +28,26 @@ type ItemResponse struct {
 	Fields []Field
 }
 
-func GetItems() (Items, error) {
-	var items Items
-	cmd := exec.Command("op", "item", "list", "--format", "json")
-	var out bytes.Buffer
-	cmd.Stdout = &out
+// func GetItems() (Items, error) {
+// 	var items Items
+// 	cmd := exec.Command("op", "item", "list", "--format", "json")
+// 	var out bytes.Buffer
+// 	cmd.Stdout = &out
 
-	err := cmd.Run()
-	if err != nil {
-		return items, err
-	}
+// 	err := cmd.Run()
+// 	if err != nil {
+// 		return items, err
+// 	}
 
-	err = json.Unmarshal(out.Bytes(), &items)
-	if err != nil {
-		return items, err
-	}
+// 	err = json.Unmarshal(out.Bytes(), &items)
+// 	if err != nil {
+// 		return items, err
+// 	}
 
-	return items, nil
-}
+// 	return items, nil
+// }
 
+// Provider - Get item to send to Plugin
 func GetItem(name string) (ItemResponse, error) {
 	cmd := exec.Command("op", "item", "get", name, "--format", "json")
 	var out bytes.Buffer

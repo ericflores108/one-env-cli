@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func TestGetKeyConfig(t *testing.T) {
+func TestGetPluginConfig(t *testing.T) {
 	viper.AddConfigPath("../../../configs")
 	viper.SetConfigName(".example-one-env-cli")
 	viper.SetConfigType("json")
@@ -14,7 +14,7 @@ func TestGetKeyConfig(t *testing.T) {
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
-	key, err := GetKeyConfig("postman")
+	key, err := GetPluginConfig("postman")
 	if err != nil {
 		t.Errorf("error: %v", err)
 	}

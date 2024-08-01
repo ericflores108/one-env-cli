@@ -9,7 +9,7 @@ import (
 )
 
 func GetPostmanAPISecret() (string, error) {
-	key, err := op.GetKeyConfig("postman")
+	key, err := op.GetPluginConfig("postman")
 	if err != nil {
 		return "", err
 	}

@@ -6,14 +6,15 @@ import (
 	"github.com/spf13/viper"
 )
 
-type Key struct {
+type PluginConfig struct {
 	Vault      string
 	KeyName    string
 	SecretName string
 }
 
-func GetKeyConfig(plugin string) (Key, error) {
-	var key Key
+// Provider - Give credentials to consume Plugin
+func GetPluginConfig(plugin string) (PluginConfig, error) {
+	var key PluginConfig
 	if plugin == "" {
 		return key, errors.New("plugin is not supported")
 	}
@@ -34,5 +35,5 @@ func GetKeyConfig(plugin string) (Key, error) {
 		return key, errors.New("secret name does not exist")
 	}
 
-	return Key{Vault: vault, KeyName: viperKeyName, SecretName: viperSecretName}, nil
+	return PluginConfig{Vault: vault, KeyName: viperKeyName, SecretName: viperSecretName}, nil
 }

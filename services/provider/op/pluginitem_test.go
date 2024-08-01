@@ -5,19 +5,19 @@ import (
 	"testing"
 )
 
-func TestGetItems(t *testing.T) {
-	items, err := GetItems()
-	if err != nil {
-		t.Errorf("Unexpected error: %v", err)
-	} else {
-		jsonData, err := json.MarshalIndent(items, "", "  ")
-		if err != nil {
-			t.Errorf("Error marshaling JSON: %v", err)
-		} else {
-			t.Logf("List:\n%s", string(jsonData))
-		}
-	}
-}
+// func TestGetItems(t *testing.T) {
+// 	items, err := GetItems()
+// 	if err != nil {
+// 		t.Errorf("Unexpected error: %v", err)
+// 	} else {
+// 		jsonData, err := json.MarshalIndent(items, "", "  ")
+// 		if err != nil {
+// 			t.Errorf("Error marshaling JSON: %v", err)
+// 		} else {
+// 			t.Logf("List:\n%s", string(jsonData))
+// 		}
+// 	}
+// }
 
 func TestGetItem(t *testing.T) {
 	item, err := GetItem("Postman")
