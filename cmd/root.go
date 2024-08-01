@@ -48,7 +48,6 @@ func init() {
 func Configure() {
 	err := utils.ReadConfigPath()
 	if err == nil {
-		log.Println("Existing configuration file read successfully.")
 		utils.InitConfig()
 		return
 	}
@@ -71,6 +70,5 @@ func Configure() {
 		log.Fatalf("Failed to write default configuration: %v", err)
 	}
 
-	log.Println("Default configuration has been written.")
 	utils.InitConfig()
 }
