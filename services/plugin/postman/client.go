@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"sync"
 	"time"
+
+	"github.com/ericflores108/one-env-cli/services/provider/op"
 )
 
 var (
@@ -25,7 +27,7 @@ func init() {
 func initializeAPIKey() error {
 	var err error
 	initAPIKeyOnce.Do(func() {
-		APIKey, err = GetPostmanAPISecret()
+		APIKey, err = op.GetPostmanAPISecret()
 		if err != nil {
 			err = fmt.Errorf("failed to get Postman API secret: %v", err)
 		}
