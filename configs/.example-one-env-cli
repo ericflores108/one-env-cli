@@ -2,8 +2,7 @@
   "plugin": {
     "postman": {
       "keyName": "Postman",
-      "keySecretName": "api-key",
-      "type": "rest"
+      "type": "api-key"
     },
     "gcp": {
       "type": "cli"
@@ -11,9 +10,12 @@
   },
   "provider": {
     "op": {
-      "vault": "Developer"
+      "vault": "Developer",
+      "enabled": true
     },
-    "bw": {}
+    "bw": {
+      "enabled": false
+    }
   },
   "cli": {
     "logging": {

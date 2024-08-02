@@ -6,7 +6,15 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sync"
+	"time"
+
+	"github.com/ericflores108/one-env-cli/providermanager"
 )
+
+type PluginJob struct {
+	Provider providermanager.ProviderManager
+}
 
 type Environment struct {
 	ID        string `json:"id"`
@@ -22,8 +30,6 @@ type EnvironmentsResponse struct {
 	Environments []Environment `json:"environments"`
 }
 
-type EnvironmentType string
-
 type Workspaces struct {
 	Workspaces []PostmanWorkspace `json:"workspaces"`
 }
@@ -38,32 +44,70 @@ type PostmanWorkspace struct {
 
 type WorkspaceID string
 
-const (
-	SecretType  EnvironmentType = "secret"
-	DefaultType EnvironmentType = "default"
+type CreateEnvironmentRequest struct {
+	Environment providermanager.PostmanEnvironmentData `json:"environment"`
+}
+
+var (
+	BaseURL        = "https://api.getpostman.com"
+	APIKey         string
+	initAPIKeyOnce sync.Once
+	httpClient     *http.Client
 )
 
-type EnvironmentVariable struct {
-	Key     string          `json:"key"`
-	Value   string          `json:"value"`
-	Enabled bool            `json:"enabled"`
-	Type    EnvironmentType `json:"type"`
+func init() {
+	httpClient = &http.Client{
+		Timeout: 30 * time.Second,
+	}
 }
 
-type EnvironmentData struct {
-	Name   string                `json:"name"`
-	Values []EnvironmentVariable `json:"values"`
+func (p *PluginJob) initializeAPIKey() error {
+	var err error
+	initAPIKeyOnce.Do(func() {
+		APIKey, err = p.Provider.GetSecret()
+		if err != nil {
+			err = fmt.Errorf("failed to get Postman API secret: %v", err)
+		}
+	})
+	return err
 }
 
-type CreateEnvironmentRequest struct {
-	Environment EnvironmentData `json:"environment"`
+func (p *PluginJob) makeRequest(method, endpoint string, body io.Reader) (*http.Response, error) {
+	err := p.initializeAPIKey()
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize API key: %v", err)
+	}
+
+	url := BaseURL + endpoint
+
+	bodyBytes, err := io.ReadAll(body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read request body: %v", err)
+	}
+
+	bodyReader := bytes.NewReader(bodyBytes)
+
+	req, err := http.NewRequest(method, url, bodyReader)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %v", err)
+	}
+
+	req.Header.Set("X-Api-Key", APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to send HTTP request: %v", err)
+	}
+
+	return resp, nil
 }
 
-func Workspace(name string) WorkspaceID {
+func (p *PluginJob) Workspace(name string) WorkspaceID {
 	if name == "" {
 		return ""
 	}
-	resp, err := makeRequest("GET", "/workspaces", nil)
+	resp, err := p.makeRequest("GET", "/workspaces", nil)
 	if err != nil {
 		fmt.Println("An error occurred. Using default workspace in Postman. ", err.Error())
 		return ""
@@ -94,7 +138,7 @@ func Workspace(name string) WorkspaceID {
 	return ""
 }
 
-func CreateEnv(envData EnvironmentData, workspaceName string) (*http.Response, error) {
+func (p *PluginJob) CreateEnv(envData providermanager.PostmanEnvironmentData, workspaceName string) (*http.Response, error) {
 	// Create the request payload
 	payload := CreateEnvironmentRequest{
 		Environment: envData,
@@ -111,10 +155,10 @@ func CreateEnv(envData EnvironmentData, workspaceName string) (*http.Response, e
 
 	// Make the POST request
 	endpoint := "/environments"
-	if workspaceID := Workspace(workspaceName); workspaceID != "" {
+	if workspaceID := p.Workspace(workspaceName); workspaceID != "" {
 		endpoint += "?workspace=" + string(workspaceID)
 	}
-	resp, err := makeRequest("POST", endpoint, body)
+	resp, err := p.makeRequest("POST", endpoint, body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make POST request: %w", err)
 	}
@@ -128,4 +172,10 @@ func CreateEnv(envData EnvironmentData, workspaceName string) (*http.Response, e
 	}
 
 	return resp, nil
+}
+
+func NewPluginJob(providerManager providermanager.ProviderManager) *PluginJob {
+	return &PluginJob{
+		Provider: providerManager,
+	}
 }

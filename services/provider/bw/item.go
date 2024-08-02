@@ -1,5 +1,0 @@
-package bw
-
-func GetItem() {
-
-}

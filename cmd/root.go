@@ -22,9 +22,9 @@ func RootCMD() *cobra.Command {
 var (
 	rootCmd = &cobra.Command{
 		Use:   "one-env-cli",
-		Short: "create environments with 1Password",
+		Short: "create environments with 1Password or BitWarden",
 		Long: `one-env-cli is a command-line tool that streamlines environment creation
-		 using your password manager as the provider.
+		 using your favorite password manager as the provider.
 		 
 		 It provides a convenient way to manage and create environments, such as Postman environments, quickly and securely.
 		`,

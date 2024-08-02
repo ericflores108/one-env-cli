@@ -18,9 +18,8 @@ var (
 type Config struct {
 	Plugin struct {
 		Postman struct {
-			KeyName       string `json:"keyName"`
-			KeySecretName string `json:"keySecretName"`
-			Type          string `json:"type"`
+			KeyName string `json:"keyName"`
+			Type    string `json:"type"`
 		} `json:"postman"`
 		GCP struct {
 			Type string `json:"type"`
@@ -28,9 +27,12 @@ type Config struct {
 	} `json:"plugin"`
 	Provider struct {
 		OP struct {
-			Vault string `json:"vault"`
+			Vault   string `json:"vault"`
+			Enabled bool   `json:"enabled"`
 		} `json:"op"`
-		BW struct{} `json:"bw"`
+		BW struct {
+			Enabled bool `json:"enabled"`
+		} `json:"bw"`
 	} `json:"provider"`
 	CLI struct {
 		Logging struct {
@@ -76,8 +78,7 @@ func DefaultConfig() string {
   "plugin": {
     "postman": {
       "keyName": "Postman",
-      "keySecretName": "api-key",
-      "type": "rest"
+      "type": "api-key"
     },
     "gcp": {
       "type": "cli"
@@ -85,9 +86,12 @@ func DefaultConfig() string {
   },
   "provider": {
     "op": {
-      "vault": "Developer"
+      "vault": "Developer",
+      "enabled": true
     },
-    "bw": {}
+    "bw": {
+      "enabled": false
+    }
   },
   "cli": {
     "logging": {
