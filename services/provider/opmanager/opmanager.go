@@ -63,10 +63,9 @@ func (opm *OPManager) PostmanEnv() (*providermanager.PostmanEnvironmentData, err
 
 	for _, field := range itemResponse.Fields {
 		// default and secret are terms to describe data in postman
-		var envType providermanager.PostmanEnvironmentType
-		envType = "default"
+		envType := providermanager.PostmanDefault
 		if field.Type == "CONCEALED" {
-			envType = "secret"
+			envType = providermanager.PostmanSecret
 		}
 
 		envVar := providermanager.PostmanEnvironmentVariable{

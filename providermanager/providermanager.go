@@ -1,12 +1,17 @@
 package providermanager
 
-type PostmanEnvironmentType string
+type PostmanType string
+
+const (
+	PostmanDefault PostmanType = "default"
+	PostmanSecret  PostmanType = "secret"
+)
 
 type PostmanEnvironmentVariable struct {
-	Key     string                 `json:"key"`
-	Value   string                 `json:"value"`
-	Enabled bool                   `json:"enabled"`
-	Type    PostmanEnvironmentType `json:"type"`
+	Key     string      `json:"key"`
+	Value   string      `json:"value"`
+	Enabled bool        `json:"enabled"`
+	Type    PostmanType `json:"type"`
 }
 
 type PostmanEnvironmentData struct {
