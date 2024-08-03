@@ -77,7 +77,7 @@ func DefaultConfig() string {
 {
   "plugin": {
     "postman": {
-      "keyName": "Postman",
+      "keyName": "PostmanAPI",
       "type": "api-key"
     },
     "gcp": {

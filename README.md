@@ -67,12 +67,21 @@ The default configuration file looks like this:
 {
   "plugin": {
     "postman": {
-      "keyName": "Postman",
-      "keySecretName": "api-key"
+      "keyName": "PostmanAPI",
+      "type": "api-key"
+    },
+    "gcp": {
+      "type": "cli"
     }
   },
-  "op": {
-    "vault": "Developer"
+  "provider": {
+    "op": {
+      "vault": "Developer",
+      "enabled": true
+    },
+    "bw": {
+      "enabled": false
+    }
   },
   "cli": {
     "logging": {
@@ -84,6 +93,7 @@ The default configuration file looks like this:
     }
   }
 }
+
 ```
 
 You can modify the configuration file to suit your needs. The available options are:

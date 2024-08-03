@@ -17,6 +17,7 @@ type BWManager struct {
 
 func (bwm *BWManager) GetItem() error {
 	cmd := exec.Command("bw", "get", "item", bwm.ItemName)
+
 	var out bytes.Buffer
 	cmd.Stdout = &out
 

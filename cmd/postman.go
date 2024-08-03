@@ -34,14 +34,14 @@ var postmanCmd = &cobra.Command{
 		// Get item
 		err = provider.GetItem()
 		if err != nil {
-			fmt.Printf("error retrieving item from 1Password: %s\n", err.Error())
+			fmt.Printf("error retrieving item from provider: %s\n", err.Error())
 			return err
 		}
 
 		// Get Postman Env
 		envData, err := provider.PostmanEnv()
 		if err != nil {
-			fmt.Printf("error retrieving item from 1Password: %s\n", err.Error())
+			fmt.Printf("error retrieving item from provider: %s\n", err.Error())
 			return err
 		}
 
@@ -71,7 +71,7 @@ var postmanCmd = &cobra.Command{
 }
 
 func init() {
-	postmanCmd.Flags().StringP("item", "i", "", "op item name")
+	postmanCmd.Flags().StringP("item", "i", "", "provider item name")
 	postmanCmd.MarkFlagRequired("item")
 	postmanCmd.Flags().StringP("workspace", "w", "", "postman workspace")
 	addCmd.AddCommand(postmanCmd)
