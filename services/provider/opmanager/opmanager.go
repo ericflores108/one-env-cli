@@ -37,7 +37,6 @@ func (opm *OPManager) GetItem() error {
 }
 
 func (opm *OPManager) GetSecret() (string, error) {
-	fmt.Println("vault", opm.Vault, opm.PluginKey, opm.PluginType)
 	cmd := exec.Command("op", "read", fmt.Sprintf("op://%s/%s/%s", opm.Vault, opm.PluginKey, opm.PluginType), "--no-newline")
 	var out bytes.Buffer
 	cmd.Stdout = &out
