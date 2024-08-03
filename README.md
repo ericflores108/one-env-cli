@@ -29,6 +29,11 @@ Plugins:
 - [Postman](https://www.postman.com/)
 - [Postman API Key](https://web.postman.co/settings/me/api-keys)
 
+### Limitations
+
+- If using BitWarden, run bw sync to pull the latest vault data from the server.
+- If using BitWarden, only Custom Fields data will be passed into the plugin. 
+
 ## Installation
 
 ### Using Homebrew

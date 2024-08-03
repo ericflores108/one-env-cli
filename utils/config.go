@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -104,4 +105,36 @@ func DefaultConfig() string {
   }
 }
 `
+}
+
+func EditProvider(providerName string) error {
+	if providerName != "op" && providerName != "bw" {
+		return fmt.Errorf("invalid provider name. Must be 'op' or 'bw'")
+	}
+
+	// Read the current configuration
+	if err := viper.ReadInConfig(); err != nil {
+		return fmt.Errorf("failed to read config: %w", err)
+	}
+
+	// Update the provider settings
+	if providerName == "op" {
+		viper.Set("provider.op.enabled", true)
+		viper.Set("provider.bw.enabled", false)
+	} else {
+		viper.Set("provider.op.enabled", false)
+		viper.Set("provider.bw.enabled", true)
+	}
+
+	// Save the updated configuration
+	if err := viper.WriteConfig(); err != nil {
+		return fmt.Errorf("failed to write config: %w", err)
+	}
+
+	// Update the global Config struct
+	if err := viper.Unmarshal(&C); err != nil {
+		return fmt.Errorf("failed to unmarshal config: %w", err)
+	}
+
+	return nil
 }

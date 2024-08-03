@@ -1,3 +1,6 @@
+/*
+Copyright © 2024 Eric Flores <eflorty108@gmail.com>
+*/
 package cmd
 
 import (
