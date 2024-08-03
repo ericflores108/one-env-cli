@@ -3,7 +3,6 @@ package opmanager
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"os/exec"
 
@@ -12,7 +11,7 @@ import (
 
 type OPManager struct {
 	ItemName   string
-	Item       any
+	Item       ItemResponse
 	Vault      string
 	PluginKey  string
 	PluginType string
@@ -29,13 +28,11 @@ func (opm *OPManager) GetItem() error {
 		return err
 	}
 
-	var itemResponse ItemResponse
-	err = json.Unmarshal(out.Bytes(), &itemResponse)
+	err = json.Unmarshal(out.Bytes(), &opm.Item)
 	if err != nil {
 		return err
 	}
 
-	opm.Item = itemResponse
 	return nil
 }
 
@@ -55,13 +52,7 @@ func (opm *OPManager) GetSecret() (string, error) {
 func (opm *OPManager) PostmanEnv() (*providermanager.PostmanEnvironmentData, error) {
 	var envVars []providermanager.PostmanEnvironmentVariable
 
-	// Type assert item to ItemResponse
-	itemResponse, ok := opm.Item.(ItemResponse)
-	if !ok {
-		return nil, errors.New("item cannot be read in 1password")
-	}
-
-	for _, field := range itemResponse.Fields {
+	for _, field := range opm.Item.Fields {
 		// default and secret are terms to describe data in postman
 		envType := providermanager.PostmanDefault
 		if field.Type == "CONCEALED" {
@@ -78,7 +69,7 @@ func (opm *OPManager) PostmanEnv() (*providermanager.PostmanEnvironmentData, err
 	}
 
 	envData := &providermanager.PostmanEnvironmentData{
-		Name:   itemResponse.Title,
+		Name:   opm.Item.Title,
 		Values: envVars,
 	}
 
@@ -91,6 +82,6 @@ func New(itemName, vault, pluginKey, pluginType string) *OPManager {
 		Vault:      vault,
 		PluginKey:  pluginKey,
 		PluginType: pluginType,
-		Item:       nil,
+		Item:       ItemResponse{},
 	}
 }
