@@ -6,8 +6,8 @@ import (
 
 var addCmd = &cobra.Command{
 	Use:   "add [postman] [-i|--item]",
-	Short: "add a 1Password item to an integrated application",
-	Long:  `This command allows you to add an item to postman from 1Password.`,
+	Short: "add an item to an integrated application",
+	Long:  `This command allows you to add an item to a plugin from your password manager (provider).`,
 }
 
 var (

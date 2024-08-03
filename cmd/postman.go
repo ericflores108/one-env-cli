@@ -5,15 +5,14 @@ import (
 	"io"
 
 	"github.com/ericflores108/one-env-cli/services/plugin/postman"
-	"github.com/ericflores108/one-env-cli/services/provider/op"
 	"github.com/ericflores108/one-env-cli/utils"
 	"github.com/spf13/cobra"
 )
 
 var postmanCmd = &cobra.Command{
 	Use:   "postman",
-	Short: "add a 1Password item to create postman environment",
-	Long:  `1Password secrets will be used to create a Postman environment.`,
+	Short: "add an item to create postman environment",
+	Long:  `Your password manager secrets will be used to create a Postman environment for the item identified.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		verbose, _ := cmd.Flags().GetBool("verbose")
 		itemName, err := cmd.Flags().GetString("item")
@@ -25,15 +24,26 @@ var postmanCmd = &cobra.Command{
 			return fmt.Errorf("missing item to upload")
 		}
 
-		// Get the item from 1Password
-		item, err := op.GetItem(itemName)
+		// register password manager
+		provider, err := utils.GetEnabledProvider(itemName, utils.C.Plugin.Postman.KeyName, utils.C.Plugin.Postman.Type)
 		if err != nil {
-			fmt.Printf("error retrieving item from 1Password: %s\n", err.Error())
+			fmt.Printf("error enabling provider: %s\n", err.Error())
 			return err
 		}
 
-		// Transform the item to environment data
-		envData := postman.TransformItemToEnv(item)
+		// Get item
+		err = provider.GetItem()
+		if err != nil {
+			fmt.Printf("error retrieving item from provider: %s\n", err.Error())
+			return err
+		}
+
+		// Get Postman Env
+		envData, err := provider.PostmanEnv()
+		if err != nil {
+			fmt.Printf("error retrieving item from provider: %s\n", err.Error())
+			return err
+		}
 
 		// Check optional flag for workspace
 		workspace, err := cmd.Flags().GetString("workspace")
@@ -41,8 +51,10 @@ var postmanCmd = &cobra.Command{
 			fmt.Printf("No workspace set. Using default workspace.")
 		}
 
+		job := postman.NewPluginJob(provider)
+
 		// Create the environment in Postman
-		resp, err := postman.CreateEnv(envData, workspace)
+		resp, err := job.CreateEnv(*envData, workspace)
 		if err != nil {
 			fmt.Printf("error creating environment in Postman: %s\n", err.Error())
 			return err
@@ -59,7 +71,7 @@ var postmanCmd = &cobra.Command{
 }
 
 func init() {
-	postmanCmd.Flags().StringP("item", "i", "", "op item name")
+	postmanCmd.Flags().StringP("item", "i", "", "provider item name")
 	postmanCmd.MarkFlagRequired("item")
 	postmanCmd.Flags().StringP("workspace", "w", "", "postman workspace")
 	addCmd.AddCommand(postmanCmd)

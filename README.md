@@ -11,8 +11,19 @@ This entire project is currently in beta. All features and functionality are sub
 To use this project, you need to have the following dependencies installed (more password managers and plugins are able to be developed): 
 
 Password managers: 
+
+1. 1Password
+
 - [1Password](https://1password.com/)
 - [1Password CLI](https://developer.1password.com/docs/cli/)
+
+*or* 
+
+2. BitWarden
+
+- [BitWarden](https://bitwarden.com/)
+- [BitWarden CLI](https://bitwarden.com/help/cli/)
+
 
 Plugins: 
 - [Postman](https://www.postman.com/)
@@ -42,18 +53,18 @@ one-env-cli [command] [flags]
 
 ### Available Commands
 
-- `add`: Add a 1Password item to an integrated application.
-  - `postman`: Add a 1Password item to create a Postman environment. The workspace is set to default. 
+- `add`: Add a password manager item to an integrated application.
+  - `postman`: Add a password manager item to create a Postman environment. The workspace is set to default. 
 
 ### postman flags
 
-- `-i, --item`: Specify the item name to add. Currently, the item must be a unique name in 1Password. 
+- `-i, --item`: Specify the item name to add. Currently, the item must be a unique name in your password manager. 
 - `-w, --workspace`: Specify the Postman workspace name to add the environment to. 
 - `-v, --verbose`: Enable verbose output.
 
 ## Configuration
 
-One-Env-CLI uses a configuration file to store settings. The default configuration file is located at `~/.one-env-cli` and is in JSON format.
+One-Env-CLI uses a configuration file to store settings. The default configuration file is located in the directory, `~/.one-env-cli`, and is in JSON format.
 
 ## Demo
 
@@ -67,12 +78,21 @@ The default configuration file looks like this:
 {
   "plugin": {
     "postman": {
-      "keyName": "Postman",
-      "keySecretName": "api-key"
+      "keyName": "PostmanAPI",
+      "type": "api-key"
+    },
+    "gcp": {
+      "type": "cli"
     }
   },
-  "op": {
-    "vault": "Developer"
+  "provider": {
+    "op": {
+      "vault": "Developer",
+      "enabled": true
+    },
+    "bw": {
+      "enabled": false
+    }
   },
   "cli": {
     "logging": {
@@ -84,13 +104,16 @@ The default configuration file looks like this:
     }
   }
 }
+
 ```
 
 You can modify the configuration file to suit your needs. The available options are:
 
 - `plugin.postman.keyName`: The name of the 1Password item that contains the Postman API key.
 - `plugin.postman.keySecretName`: The name of the secret field within the 1Password item that holds the Postman API key.
-- `op.vault`: The name of the 1Password vault to use.
+- `provider.op.vault`: The name of the 1Password vault to use.
+- `provider.op.enabled`: Enable the application to use 1Password.
+- `provider.bw.enabled`: Enable the application to use BitWarden.
 - `cli.logging.level`: The logging level (e.g., "debug", "info", "error").
 - `cli.logging.encoding`: The encoding format for the log files (e.g., "json").
 - `cli.logging.outputPaths`: An array of file paths where the logs will be written.
@@ -107,9 +130,9 @@ Here's an example of how to use One-Env-CLI to create a Postman environment:
 one-env-cli add postman -i Strava
 ```
 
-This command will retrieve the specified 1Password item, transform it into a Postman environment, and create the environment in Postman.
+This command will retrieve the specified item, transform it into a Postman environment, and create the environment in Postman.
 
-All 1Password secrets are retrieved through 1Password CLI. 
+All password manager secrets are retrieved and authenticated through their respective CLI applications. No passwords or data is stored, instead it passes through from one environment to another. 
 
 ## License
 
