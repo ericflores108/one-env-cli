@@ -123,9 +123,33 @@ You can modify the configuration file to suit your needs. The available options 
 - `cli.logging.encoding`: The encoding format for the log files (e.g., "json").
 - `cli.logging.outputPaths`: An array of file paths where the logs will be written.
 
-### Custom Configuration (Work in Progress)
+### Update Configuration
 
-The `config` command for setting up custom configuration is currently under development and will be available in a future release.
+You can use the `config` command to update certain aspects of the configuration. Currently, it supports setting the active provider.
+
+To set the active provider, use the following command:
+
+```
+one-env-cli config set-provider [provider]
+```
+
+Where `[provider]` is either `op` for 1Password or `bw` for BitWarden.
+
+For example, to set 1Password as the active provider:
+
+```
+one-env-cli config set-provider op
+```
+
+Or to set BitWarden as the active provider:
+
+```
+one-env-cli config set-provider bw
+```
+
+This command will update the configuration file to enable the specified provider and disable the other.
+
+Note: Additional configuration options will be available in future releases.
 
 ## Example
 
