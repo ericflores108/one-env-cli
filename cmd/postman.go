@@ -42,7 +42,7 @@ var postmanCmd = &cobra.Command{
 		}
 
 		// Get Postman Env
-		envData, err := provider.PostmanEnv()
+		envData, err := provider.NewPostmanEnv()
 		if err != nil {
 			fmt.Printf("error retrieving item from provider: %s\n", err.Error())
 			return err

@@ -47,7 +47,7 @@ func (bwm *BWManager) GetSecret() (string, error) {
 	return out.String(), nil
 }
 
-func (bwm *BWManager) PostmanEnv() (*providermanager.PostmanEnvironmentData, error) {
+func (bwm *BWManager) NewPostmanEnv() (*providermanager.PostmanEnvironmentData, error) {
 	var envVars []providermanager.PostmanEnvironmentVariable
 
 	for _, field := range bwm.Item.Fields {

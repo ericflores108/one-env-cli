@@ -25,5 +25,7 @@ type ProviderManager interface {
 	// Provider - If Plugin needs credentials, such as api-key, get from provider
 	GetSecret() (string, error)
 	// Provider - Translate Provider.Item to Plugin
-	PostmanEnv() (*PostmanEnvironmentData, error)
+	NewPostmanEnv() (*PostmanEnvironmentData, error)
+	// Provider - Translate Provider.Item to Plugin
+	// NewGCPSecret() error
 }

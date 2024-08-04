@@ -49,7 +49,7 @@ func (opm *OPManager) GetSecret() (string, error) {
 	return out.String(), nil
 }
 
-func (opm *OPManager) PostmanEnv() (*providermanager.PostmanEnvironmentData, error) {
+func (opm *OPManager) NewPostmanEnv() (*providermanager.PostmanEnvironmentData, error) {
 	var envVars []providermanager.PostmanEnvironmentVariable
 
 	for _, field := range opm.Item.Fields {

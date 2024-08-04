@@ -26,8 +26,8 @@ Password managers:
 
 
 Plugins: 
-- [Postman](https://www.postman.com/)
-- [Postman API Key](https://web.postman.co/settings/me/api-keys)
+1.  [Postman](https://www.postman.com/) (see [Postman API Key](https://web.postman.co/settings/me/api-keys))
+2.  [Google Cloud Platform](https://cloud.google.com/)
 
 ### Limitations
 
